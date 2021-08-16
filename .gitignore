@@ -1,0 +1,5 @@
+.idea/
+.env
+githosting_rsa
+githosting_rsa.pub
+.vagrant/
