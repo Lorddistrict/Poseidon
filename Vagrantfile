@@ -25,10 +25,6 @@ Vagrant.configure('2') do |config|
         config.vm.define "slave#{index}" do |machine|
             machine.vm.hostname = "slave#{index}"
             machine.vm.network 'private_network', ip: "192.168.50.#{index * 10 + 10}"
-            if index.zero?
-                machine.vm.network 'forwarded_port', guest: 80, host: 1080
-                machine.vm.network 'forwarded_port', guest: 8080, host: 8080
-            end
         end
     end
 
