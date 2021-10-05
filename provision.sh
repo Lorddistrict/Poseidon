@@ -61,7 +61,10 @@ apt-get install -y \
     software-properties-common \
     net-tools
 
-if [ "$HOSTNAME" = "master" ]; then
+if [ "$HOSTNAME" = "s0.infra" ]; then
+  apt-get install -y \
+		puppet-master
+
   mkdir -p /root/.ssh
 
 	cp /vagrant/githosting_rsa /home/vagrant/.ssh/githosting_rsa
@@ -98,7 +101,9 @@ if [ "$HOSTNAME" = "master" ]; then
 
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
-
+else
+	apt-get install -y \
+		puppet
 fi
 
 sed -i \
@@ -106,13 +111,12 @@ sed -i \
 	/etc/hosts
 cat >> /etc/hosts <<MARK
 ## BEGIN PROVISION
-192.168.50.250      master
-192.168.50.10       slave0
-192.168.50.20       slave1
-192.168.50.30       slave2
-192.168.50.40       slave3
-192.168.50.50       slave4
-192.168.50.60       slave5
+192.168.50.250      s0.infra
+192.168.50.10       s1.infra
+192.168.50.20       s2.infra
+192.168.50.30       s3.infra
+192.168.50.40       s4.infra
+192.168.50.50       s5.infra
 ## END PROVISION
 MARK
 
