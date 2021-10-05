@@ -102,6 +102,8 @@ if [ "$HOSTNAME" = "s0" ]; then
 
 	GIT_DIR="$(basename "$GIT_REPOSITORY" |sed -e 's/.git$//')"
 
+  rm -rf "/home/vagrant/$(basename "$GIT_DIR")"
+
 	if [ ! -d "/home/vagrant/$(basename "$GIT_DIR")" ]; then
         	su - vagrant -c "git clone -b '$GIT_BRANCH' '$GIT_REPOSITORY' '$GIT_DIR'"
 	fi

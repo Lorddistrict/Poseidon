@@ -24,10 +24,9 @@ Vagrant.configure('2') do |config|
     SERVERS_COUNT.times do |index|
         config.vm.define "s#{index + 1}.infra" do |machine|
             machine.vm.hostname = "s#{index + 1}.infra"
-            machine.vm.network 'private_network', auto_config: false, name: 'vboxnet0'
+            machine.vm.network 'private_network', ip: "192.168.50.#{index * 10 + 10}", name: 'vboxnet0'
         end
     end
 
     config.vm.provision 'shell', path: 'provision.sh'
-
 end
