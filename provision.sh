@@ -111,9 +111,12 @@ if [ "$HOSTNAME" = "s0" ]; then
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 
-  #	Lint & Execute puppet network.pp
+  #	Linters
   puppet-lint Poseidon/puppet/manifests/s0.pp
-  puppet apply Poseidon/puppet/manifests/s0.pp
+  puppet-lint Poseidon/puppet/modules/dnsmasq/manifests/init.pp
+
+  # Execute puppet manifests
+  puppet apply Poseidon/puppet/manifests/s0.pp --modulepath=Poseidon/puppet/modules
 else
 	apt-get install -y \
 		puppet
