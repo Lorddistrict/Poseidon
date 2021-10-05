@@ -2,7 +2,6 @@
 class dnsmasq {
   package {
     'dnsmasq':
-      ensure => present,
-      name   => 'dnsmasq'
+      ensure => present
   }
 }
