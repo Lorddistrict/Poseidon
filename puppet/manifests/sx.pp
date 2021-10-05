@@ -4,13 +4,29 @@ node 's1'{
   include apache
   include apache::vhosts
   include php
+
+  class { '::nfs':
+      client_enabled => true,
+    }
+    Nfs::Client::Mount <<| |>> {
+      ensure => 'mounted',
+      mount  => '/mnt/nfs'
+    }
  }
 
 node 's2'{
   $servername = 's2.infra'
   include apache
   include apache::vhosts
-  include php  
+  include php
+
+  class { '::nfs':
+      client_enabled => true,
+    }
+    Nfs::Client::Mount <<| |>> {
+      ensure => 'mounted',
+      mount  => '/mnt/nfs'
+    }
 }
 
 node 's3'{
