@@ -7,8 +7,8 @@ class dnsmasq {
 
   file {
     'delete current dnsmasq.conf':
-      ensure  => absent,
-      path    => '/etc/dnsmasq.conf'
+      ensure => absent,
+      path   => '/etc/dnsmasq.conf'
   }
 
   file {
