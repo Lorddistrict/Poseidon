@@ -7,6 +7,7 @@ USER_EMAIL=""
 USER_NAME=""
 GIT_HOST=""
 GIT_REPOSITORY=""
+GIT_BRANCH=""
 HOSTNAME="$(hostname)"
 
 if [ ! -f /vagrant/.env ]; then
@@ -37,6 +38,12 @@ if ! grep -q '^GIT_REPOSITORY=' /vagrant/.env ; then
 fi
 eval "$(grep '^GIT_REPOSITORY=' /vagrant/.env)"
 
+if ! grep -q '^GIT_BRANCH=' /vagrant/.env ; then
+	>&2 echo "ERROR: unable to find GIT_BRANCH key in /vagrant/.env file"
+	exit 1
+fi
+eval "$(grep '^GIT_BRANCH=' /vagrant/.env)"
+
 if [ ! -f /vagrant/githosting_rsa ]; then
 	>&2 echo "ERROR: unable to find /vagrant/githosting_rsa keyfile"
 	exit 1
@@ -61,9 +68,10 @@ apt-get install -y \
     software-properties-common \
     net-tools
 
-if [ "$HOSTNAME" = "s0.infra" ]; then
+if [ "$HOSTNAME" = "s0" ]; then
   apt-get install -y \
-		puppet-master
+		puppet-master \
+		puppet-lint
 
   mkdir -p /root/.ssh
 
@@ -82,7 +90,6 @@ if [ "$HOSTNAME" = "s0.infra" ]; then
 	sed -i \
 		-e '/## BEGIN PROVISION/,/## END PROVISION/d' \
 		/home/vagrant/.bashrc
-
 	cat >> /home/vagrant/.bashrc <<-MARK
 	## BEGIN PROVISION
 	eval \$(ssh-agent -s)
@@ -96,11 +103,15 @@ if [ "$HOSTNAME" = "s0.infra" ]; then
 	GIT_DIR="$(basename "$GIT_REPOSITORY" |sed -e 's/.git$//')"
 
 	if [ ! -d "/home/vagrant/$(basename "$GIT_DIR")" ]; then
-        	su - vagrant -c "git clone '$GIT_REPOSITORY' '$GIT_DIR'"
+        	su - vagrant -c "git clone -b '$GIT_BRANCH' '$GIT_REPOSITORY' '$GIT_DIR'"
 	fi
 
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
+
+  #	Lint & Execute puppet network.pp
+  puppet-lint Poseidon/manifests/network.pp
+  puppet apply Poseidon/manifests/network.pp
 else
 	apt-get install -y \
 		puppet
