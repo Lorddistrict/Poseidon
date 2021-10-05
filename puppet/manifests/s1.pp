@@ -1,4 +1,6 @@
 
-  # node s1.infra{
-  #   include apache_php;
-  # }
+node 's1'{
+  $servername = 's1.infra'
+  include apache
+  include apache::vhosts
+ }
