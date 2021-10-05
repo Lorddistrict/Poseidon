@@ -38,6 +38,12 @@ if ! grep -q '^GIT_REPOSITORY=' /vagrant/.env ; then
 fi
 eval "$(grep '^GIT_REPOSITORY=' /vagrant/.env)"
 
+if ! grep -q '^GIT_BRANCH=' /vagrant/.env ; then
+	>&2 echo "ERROR: unable to find GIT_BRANCH key in /vagrant/.env file"
+	exit 1
+fi
+eval "$(grep '^GIT_BRANCH=' /vagrant/.env)"
+
 if [ ! -f /vagrant/githosting_rsa ]; then
 	>&2 echo "ERROR: unable to find /vagrant/githosting_rsa keyfile"
 	exit 1
@@ -84,7 +90,6 @@ if [ "$HOSTNAME" = "s0" ]; then
 	sed -i \
 		-e '/## BEGIN PROVISION/,/## END PROVISION/d' \
 		/home/vagrant/.bashrc
-
 	cat >> /home/vagrant/.bashrc <<-MARK
 	## BEGIN PROVISION
 	eval \$(ssh-agent -s)
