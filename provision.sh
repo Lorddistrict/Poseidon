@@ -105,8 +105,8 @@ if [ "$HOSTNAME" = "s0" ]; then
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 
   #	Lint & Execute puppet network.pp
-  puppet-lint manifests/network.pp
-  puppet apply manifests/network.pp
+  puppet-lint network/manifests/network.pp
+  puppet apply network/manifests/network.pp
 else
 	apt-get install -y \
 		puppet
