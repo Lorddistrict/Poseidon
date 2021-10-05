@@ -1,4 +1,4 @@
-# Network config - DNSmasq
+# Network config - DNSmasq for s0.infra
 package {
   'dnsmasq':
     ensure => present,
