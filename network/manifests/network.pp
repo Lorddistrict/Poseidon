@@ -7,6 +7,6 @@ class network {
   }
 }
 
-node s0 {
+node 's0' {
   include network
 }

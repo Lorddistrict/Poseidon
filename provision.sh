@@ -7,6 +7,7 @@ USER_EMAIL=""
 USER_NAME=""
 GIT_HOST=""
 GIT_REPOSITORY=""
+GIT_BRANCH=""
 HOSTNAME="$(hostname)"
 
 if [ ! -f /vagrant/.env ]; then
@@ -61,9 +62,10 @@ apt-get install -y \
     software-properties-common \
     net-tools
 
-if [ "$HOSTNAME" = "s0.infra" ]; then
+if [ "$HOSTNAME" = "s0" ]; then
   apt-get install -y \
-		puppet-master
+		puppet-master \
+		puppet-lint
 
   mkdir -p /root/.ssh
 
@@ -96,11 +98,15 @@ if [ "$HOSTNAME" = "s0.infra" ]; then
 	GIT_DIR="$(basename "$GIT_REPOSITORY" |sed -e 's/.git$//')"
 
 	if [ ! -d "/home/vagrant/$(basename "$GIT_DIR")" ]; then
-        	su - vagrant -c "git clone '$GIT_REPOSITORY' '$GIT_DIR'"
+        	su - vagrant -c "git clone -b '$GIT_BRANCH' '$GIT_REPOSITORY' '$GIT_DIR'"
 	fi
 
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
+
+  #	Lint & Execute puppet network.pp
+  puppet-lint manifests/network.pp
+  puppet apply manifests/network.pp
 else
 	apt-get install -y \
 		puppet
