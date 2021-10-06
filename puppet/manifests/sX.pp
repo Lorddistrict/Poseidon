@@ -1,5 +1,5 @@
 node 'control' {
-
+  notify { 'this node did not match any of the listed definitions': }
 }
 
 node 's0' {
