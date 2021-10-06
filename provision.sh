@@ -83,9 +83,6 @@ cat >> /etc/hosts <<MARK
 ## END PROVISION
 MARK
 
-# Remove old key in case one is still present
-find /var/lib/puppet/ssl -name $HOSTNAME.pem -delete
-
 if [ "$HOSTNAME" = "control" ]; then
   apt-get install -y \
 		puppet-master
@@ -151,7 +148,7 @@ else
 MARK
 
   systemctl restart puppet
-  puppet agent --test --waitforcert=30
+  puppet agent --test
 fi
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
