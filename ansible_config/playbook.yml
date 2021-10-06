@@ -1,0 +1,48 @@
+---
+- hosts: all
+  tasks:
+    - name: install vim
+      apt:
+        name: vim
+        state: present
+
+- hosts: private_servers
+  tasks:
+    - name: replace resolv.conf for all sX.infra
+      copy:
+        src: /home/vagrant/ansible_config/templates/dnsmasq/resolv.conf
+        dest: /etc/resolv.conf
+
+- hosts: network
+  tasks:
+    - name: install dnsmasq
+      apt:
+        name: dnsmasq
+        state: present
+    - name: replace existing dnsmasq.conf
+      copy:
+        src: /home/vagrant/ansible_config/templates/dnsmasq/dnsmasq.conf
+        dest: /etc/dnsmasq.conf
+
+- hosts: web
+  tasks:
+    - name: install web packages
+      apt:
+        name:
+          - apache2
+          - php7.3
+        state: present
+
+- hosts: database
+  tasks:
+    - name: install mariaDB
+      apt:
+        name: mariadb
+        state: present
+
+- hosts: nfs
+  tasks:
+    - name: install nfs server
+      apt:
+        name: nfs-kernel-server
+        state: present
