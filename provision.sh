@@ -7,6 +7,7 @@ USER_EMAIL=""
 USER_NAME=""
 GIT_HOST=""
 GIT_REPOSITORY=""
+GIT_BRANCH=""
 HOSTNAME="$(hostname)"
 
 if [ ! -f /vagrant/.env ]; then
@@ -37,6 +38,12 @@ if ! grep -q '^GIT_REPOSITORY=' /vagrant/.env ; then
 fi
 eval "$(grep '^GIT_REPOSITORY=' /vagrant/.env)"
 
+if ! grep -q '^GIT_BRANCH=' /vagrant/.env ; then
+	>&2 echo "ERROR: unable to find GIT_BRANCH key in /vagrant/.env file"
+	exit 1
+fi
+eval "$(grep '^GIT_BRANCH=' /vagrant/.env)"
+
 if [ ! -f /vagrant/githosting_rsa ]; then
 	>&2 echo "ERROR: unable to find /vagrant/githosting_rsa keyfile"
 	exit 1
@@ -59,9 +66,27 @@ apt-get install -y \
     vim \
     gnupg2 \
     software-properties-common \
-    net-tools
+    net-tools \
+    puppet-lint
 
-if [ "$HOSTNAME" = "master" ]; then
+sed -i \
+	-e '/^## BEGIN PROVISION/,/^## END PROVISION/d' \
+	/etc/hosts
+cat >> /etc/hosts <<MARK
+## BEGIN PROVISION
+192.168.50.250      control
+192.168.50.10       s0.infra
+192.168.50.20       s1.infra
+192.168.50.30       s2.infra
+192.168.50.40       s3.infra
+192.168.50.50       s4.infra
+## END PROVISION
+MARK
+
+if [ "$HOSTNAME" = "control" ]; then
+  apt-get install -y \
+		puppet-master
+
   mkdir -p /root/.ssh
 
 	cp /vagrant/githosting_rsa /home/vagrant/.ssh/githosting_rsa
@@ -79,7 +104,6 @@ if [ "$HOSTNAME" = "master" ]; then
 	sed -i \
 		-e '/## BEGIN PROVISION/,/## END PROVISION/d' \
 		/home/vagrant/.bashrc
-
 	cat >> /home/vagrant/.bashrc <<-MARK
 	## BEGIN PROVISION
 	eval \$(ssh-agent -s)
@@ -92,29 +116,38 @@ if [ "$HOSTNAME" = "master" ]; then
 
 	GIT_DIR="$(basename "$GIT_REPOSITORY" |sed -e 's/.git$//')"
 
+  rm -rf "/home/vagrant/$(basename "$GIT_DIR")"
+
 	if [ ! -d "/home/vagrant/$(basename "$GIT_DIR")" ]; then
-        	su - vagrant -c "git clone '$GIT_REPOSITORY' '$GIT_DIR'"
+        	su - vagrant -c "git clone -b '$GIT_BRANCH' '$GIT_REPOSITORY' '$GIT_DIR'"
 	fi
 
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 
-fi
+  puppet-lint -f Poseidon/puppet/manifests/sX.pp
+  puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules
 
-sed -i \
-	-e '/^## BEGIN PROVISION/,/^## END PROVISION/d' \
-	/etc/hosts
-cat >> /etc/hosts <<MARK
-## BEGIN PROVISION
-192.168.50.250      master
-192.168.50.10       slave0
-192.168.50.20       slave1
-192.168.50.30       slave2
-192.168.50.40       slave3
-192.168.50.50       slave4
-192.168.50.60       slave5
-## END PROVISION
+else
+  apt-get install -y \
+  		puppet
+
+  cat > /etc/puppet/puppet.conf <<-MARK
+[main]
+ssldir = /var/lib/puppet/ssl
+certname = $HOSTNAME
+server = control
+environment = production
+
+[master]
+vardir = /var/lib/puppet
+cadir = /var/lib/puppet/ssl/ca
+dns_alt_names = puppet
 MARK
+
+  systemctl restart puppet
+  puppet agent --test || true
+fi
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
 APT::Periodic::Enable "0";
