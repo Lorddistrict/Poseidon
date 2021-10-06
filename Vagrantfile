@@ -27,11 +27,11 @@ Vagrant.configure('2') do |config|
             machine.vm.network 'private_network', ip: "192.168.50.#{index * 10 + 10}", name: 'vboxnet0'
 
             if index = 1
-                machine.vm.network "forwarded_port", guest: 80, host: 1010
+                machine.vm.network "forwarded_port", guest: 80, host: 1010, auto_correct: true
             end
 
             if index = 2
-                machine.vm.network "forwarded_port", guest: 80, host: 2020
+                machine.vm.network "forwarded_port", guest: 80, host: 2020, auto_correct: true
             end
 
         end
