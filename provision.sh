@@ -144,7 +144,7 @@ else
   [master]
   vardir = /var/lib/puppet
   cadir = /var/lib/puppet/ssl/ca
-  dns_alt_names = puppet
+  dns_alt_names = 192.168.50.250
 MARK
 
   systemctl restart puppet

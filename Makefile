@@ -9,4 +9,9 @@ reload:
 	make cert
 
 .PHONY: cert ## apply puppet certificates
-	vagrant ssh control -c puppet cert sign --all
+cert:
+	vagrant ssh -c "puppet cert sign --all" control
+
+.PHONY: gen-cert ## apply puppet certificates
+gen-cert:
+	vagrant ssh -c "puppet agent --test" s0.infra
