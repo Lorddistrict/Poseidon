@@ -69,6 +69,20 @@ apt-get install -y \
     net-tools \
     puppet-lint
 
+sed -i \
+	-e '/^## BEGIN PROVISION/,/^## END PROVISION/d' \
+	/etc/hosts
+cat >> /etc/hosts <<MARK
+## BEGIN PROVISION
+192.168.50.250      control
+192.168.50.10       s0.infra
+192.168.50.20       s1.infra
+192.168.50.30       s2.infra
+192.168.50.40       s3.infra
+192.168.50.50       s4.infra
+## END PROVISION
+MARK
+
 if [ "$HOSTNAME" = "control" ]; then
   apt-get install -y \
 		puppet-master
@@ -120,41 +134,25 @@ else
   apt-get install -y \
   		puppet
 
-  	cat > /etc/puppet/puppet.conf <<-MARK
-[main]
-ssldir = /var/lib/puppet/ssl
-certname = $HOSTNAME
-server = control
-environment = dev
+  cat > /etc/puppet/puppet.conf <<-MARK
+  [main]
+  ssldir = /var/lib/puppet/ssl
+  certname = $HOSTNAME
+  server = control
+  environment = production
 
-[master]
-vardir = /var/lib/puppet
-cadir = /var/lib/puppet/ssl/ca
-dns_alt_names = puppet
+  [master]
+  vardir = /var/lib/puppet
+  cadir = /var/lib/puppet/ssl/ca
+  dns_alt_names = puppet
 MARK
 
-  	systemctl restart puppet
-  	puppet agent --test
+  systemctl restart puppet
+  puppet agent --test
 fi
-
-sed -i \
-	-e '/^## BEGIN PROVISION/,/^## END PROVISION/d' \
-	/etc/hosts
-cat >> /etc/hosts <<MARK
-## BEGIN PROVISION
-192.168.50.250      control
-192.168.50.10       s0.infra
-192.168.50.20       s1.infra
-192.168.50.30       s2.infra
-192.168.50.40       s3.infra
-192.168.50.50       s4.infra
-## END PROVISION
-MARK
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
 APT::Periodic::Enable "0";
 MARK
-
-
 
 echo "SUCCESS"
