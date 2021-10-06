@@ -1,4 +1,4 @@
-.PHONY: run-manifests ## it reloads all the app
+.PHONY: run-manifests ## run manifests & run services
 run-manifests:
 	vagrant ssh -c "puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules" control
 
@@ -6,13 +6,17 @@ run-manifests:
 cert:
 	vagrant ssh -c "sudo puppet cert sign --all" control
 
+.PHONY: setup ## setup environment for working
+setup:
+	make cert
+	make run-manifests
+
 .PHONY: up ## it starts all the app
 up:
 	vagrant up --provision
-	make cert
-	make run-manifests
+	make setup
 
 .PHONY: reload ## it reloads all the app
 reload:
 	vagrant reload --provision
-	make cert
+	make setup
