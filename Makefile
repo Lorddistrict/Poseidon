@@ -1,6 +1,6 @@
 .PHONY: run-manifests ## run manifests & run services
 run-manifests:
-	vagrant ssh -c "puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules" control
+	vagrant ssh -c "puppet apply Poseidon/puppet/manifests/default.pp --modulepath=Poseidon/puppet/modules" control
 
 .PHONY: cert ## validate puppet certificates
 cert:

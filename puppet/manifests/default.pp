@@ -1,5 +1,5 @@
 node default {
-  # Something
+  # Something here
 }
 
 node 's0' {
