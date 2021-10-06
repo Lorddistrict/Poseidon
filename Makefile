@@ -9,8 +9,8 @@ cert:
 .PHONY: up ## it starts all the app
 up:
 	vagrant up --provision
-	make run-manifests
 	make cert
+	make run-manifests
 
 .PHONY: reload ## it reloads all the app
 reload:
