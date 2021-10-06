@@ -150,7 +150,4 @@ cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
 APT::Periodic::Enable "0";
 MARK
 
-# After all - Exec manifests - On control
-cd Poseidon && make run-manifests
-
 echo "SUCCESS"
