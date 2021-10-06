@@ -25,15 +25,16 @@ Vagrant.configure('2') do |config|
         config.vm.define "s#{index}.infra" do |machine|
             machine.vm.hostname = "s#{index}.infra"
             machine.vm.network 'private_network', ip: "192.168.50.#{index * 10 + 10}", name: 'vboxnet0'
-
-            if index = 1
-                machine.vm.network "forwarded_port", guest: 80, host: 2020, auto_correct: true
+            if index == 0
+                machine.vm.network "forwarded_port", guest: 80, host: 1080
+                machine.vm.network "forwarded_port", guest: 80, host: 8080
             end
-
-            if index = 2
-                machine.vm.network "forwarded_port", guest: 80, host: 3030, auto_correct: true
+            if index == 1
+                machine.vm.network "forwarded_port", guest: 80, host: 2080
             end
-
+            if index == 2
+                machine.vm.network "forwarded_port", guest: 80, host: 3080
+            end
         end
     end
     config.vm.provision 'shell', path: 'provision.sh'
