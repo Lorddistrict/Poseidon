@@ -1,11 +1,11 @@
 .PHONY: up ## it starts all the app
 up:
-	vagrant up --provision
+	vagrant up --provision --debug
 	make cert
 
 .PHONY: reload ## it reloads all the app
 reload:
-	vagrant reload --provision
+	vagrant reload --provision --debug
 	make cert
 
 .PHONY: cert ## apply puppet certificates

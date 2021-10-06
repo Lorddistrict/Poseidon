@@ -147,8 +147,11 @@ else
   dns_alt_names = 192.168.50.250
 MARK
 
+  echo "===== 1 ====="
   systemctl restart puppet
+  echo "===== 2 ====="
   puppet agent --test
+  echo "===== 3 ====="
 fi
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
