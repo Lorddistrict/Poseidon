@@ -14,18 +14,18 @@ Vagrant.configure('2') do |config|
         vb.gui = false
     end
 
+    # s0.infra machine (x1)
+    config.vm.define 'control' do |machine|
+        machine.vm.hostname = 'control'
+        machine.vm.network 'private_network', ip: '192.168.50.250', name: 'vboxnet0'
+    end
+
     # sX.infra machines (x5)
     SERVERS_COUNT.times do |index|
         config.vm.define "s#{index}.infra" do |machine|
             machine.vm.hostname = "s#{index}.infra"
             machine.vm.network 'private_network', ip: "192.168.50.#{index * 10 + 10}", name: 'vboxnet0'
         end
-    end
-
-    # s0.infra machine (x1)
-    config.vm.define 'control' do |machine|
-        machine.vm.hostname = 'control'
-        machine.vm.network 'private_network', ip: '192.168.50.250', name: 'vboxnet0'
     end
 
     config.vm.provision 'shell', path: 'provision.sh'
