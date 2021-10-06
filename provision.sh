@@ -111,12 +111,30 @@ if [ "$HOSTNAME" = "control" ]; then
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 
-	puppet-lint -f Poseidon/puppet/manifests/sX.pp
-  puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules
+	puppet cert sign --all
+
+#  puppet-lint -f Poseidon/puppet/manifests/sX.pp
+#  puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules
 
 else
   apt-get install -y \
   		puppet
+
+  	cat > /etc/puppet/puppet.conf <<-MARK
+[main]
+ssldir = /var/lib/puppet/ssl
+certname = $HOSTNAME
+server = control
+environment = dev
+
+[master]
+vardir = /var/lib/puppet
+cadir = /var/lib/puppet/ssl/ca
+dns_alt_names = puppet
+MARK
+
+  	systemctl restart puppet
+  	puppet agent --test
 fi
 
 sed -i \
@@ -124,17 +142,19 @@ sed -i \
 	/etc/hosts
 cat >> /etc/hosts <<MARK
 ## BEGIN PROVISION
-192.168.50.250      s0.infra
-192.168.50.10       s1.infra
-192.168.50.20       s2.infra
-192.168.50.30       s3.infra
-192.168.50.40       s4.infra
-192.168.50.50       s5.infra
+192.168.50.250      control
+192.168.50.10       s0.infra
+192.168.50.20       s1.infra
+192.168.50.30       s2.infra
+192.168.50.40       s3.infra
+192.168.50.50       s4.infra
 ## END PROVISION
 MARK
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
 APT::Periodic::Enable "0";
 MARK
+
+
 
 echo "SUCCESS"
