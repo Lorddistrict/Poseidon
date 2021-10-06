@@ -32,6 +32,10 @@ class php {
   }
 }
 
+node default {
+  # do nothing
+}
+
 node 's0' {
   include dnsmasq
 }

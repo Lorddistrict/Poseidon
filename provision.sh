@@ -74,7 +74,7 @@ sed -i \
 	/etc/hosts
 cat >> /etc/hosts <<MARK
 ## BEGIN PROVISION
-192.168.50.250      control
+192.168.50.250      control, puppet
 192.168.50.10       s0.infra
 192.168.50.20       s1.infra
 192.168.50.30       s2.infra
