@@ -11,3 +11,7 @@ up:
 reload:
 	vagrant reload --provision
 	make cert
+
+.PHONY: run-manifests ## it reloads all the app
+run-manifests:
+	vagrant ssh -c "puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules" control

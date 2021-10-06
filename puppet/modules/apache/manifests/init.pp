@@ -1,9 +1,6 @@
 # Apache installation
 class apache {
 
-  $site_name = "root"
-  $document_root = "root"
-
   package {
     'apache2':
       ensure => present
