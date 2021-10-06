@@ -1,0 +1,10 @@
+[main]
+ssldir = /var/lib/puppet/ssl
+certname = <%= @hostname %>
+server = control
+environment = dev
+
+[master]
+vardir = /var/lib/puppet
+cadir = /var/lib/puppet/ssl/ca
+dns_alt_names = puppet

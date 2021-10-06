@@ -66,12 +66,12 @@ apt-get install -y \
     vim \
     gnupg2 \
     software-properties-common \
-    net-tools
+    net-tools \
+    puppet-lint
 
-if [ "$HOSTNAME" = "s0" ]; then
+if [ "$HOSTNAME" = "control" ]; then
   apt-get install -y \
-		puppet-master \
-		puppet-lint
+		puppet-master
 
   mkdir -p /root/.ssh
 
@@ -111,15 +111,12 @@ if [ "$HOSTNAME" = "s0" ]; then
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 
-  #	Linters
-  puppet-lint -f Poseidon/puppet/manifests/s0.pp
-  puppet-lint -f Poseidon/puppet/modules/dnsmasq/manifests/init.pp
-
-  # Execute puppet manifests
-  puppet apply Poseidon/puppet/manifests/s0.pp --modulepath=Poseidon/puppet/modules
 else
-	apt-get install -y \
-		puppet
+  apt-get install -y \
+  		puppet
+
+  puppet-lint -f Poseidon/puppet/manifests/sX.pp
+  puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules
 fi
 
 sed -i \
