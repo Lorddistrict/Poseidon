@@ -14,7 +14,7 @@ setup:
 .PHONY: up ## it starts all the app
 up:
 	vagrant up --provision
-	make setup
+	#make setup
 
 .PHONY: reload ## it reloads all the app
 reload:

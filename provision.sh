@@ -143,7 +143,7 @@ dns_alt_names = puppet
 MARK
 
   systemctl restart puppet
-  puppet agent --test || true
+#  puppet agent --test || true
 fi
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
