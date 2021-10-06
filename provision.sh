@@ -148,7 +148,7 @@ else
 MARK
 
   systemctl restart puppet
-  puppet agent --test
+  puppet agent --test --waitforcert=30
 fi
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
