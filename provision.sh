@@ -148,7 +148,7 @@ else
 MARK
 
   systemctl restart puppet
-  puppet agent --test
+  su - vagrant -c puppet agent --test
 fi
 
 cat >> /etc/apt/apt.conf.d/99periodic-disable <<MARK
