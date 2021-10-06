@@ -1,3 +1,7 @@
+node default {
+  # Something
+}
+
 node 's0' {
   include dnsmasq
 }
