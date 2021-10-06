@@ -83,9 +83,6 @@ cat >> /etc/hosts <<MARK
 ## END PROVISION
 MARK
 
-apt-get update -y
-apt-get upgrade -y
-
 if [ "$HOSTNAME" = "control" ]; then
   apt-get install -y \
 		puppet-master
