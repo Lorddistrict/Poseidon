@@ -2,7 +2,7 @@
 # vi: set ft=ruby sw=2 st=2 et :
 # frozen_string_literal: true
 
-SERVERS_COUNT = 1
+SERVERS_COUNT = 5
 
 Vagrant.configure('2') do |config|
     config.vm.box = 'debian/buster64'
