@@ -125,10 +125,8 @@ if [ "$HOSTNAME" = "control" ]; then
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 
-#  puppet cert sign --all
-
-#  puppet-lint -f Poseidon/puppet/manifests/sX.pp
-#  puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules
+  puppet-lint -f Poseidon/puppet/manifests/sX.pp
+  puppet apply Poseidon/puppet/manifests/sX.pp --modulepath=Poseidon/puppet/modules
 
 else
   apt-get install -y \
