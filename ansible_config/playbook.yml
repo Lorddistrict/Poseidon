@@ -181,7 +181,7 @@
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
     - name: create wp-config.php in each site
-      file:
+      template:
         src: "/home/vagrant/Poseidon/ansible_config/templates/web/wp-config.php"
         dest: "/home/data/{{ item.path }}/wordpress/wp-config.php"
         group: www-data
