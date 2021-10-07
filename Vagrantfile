@@ -26,6 +26,7 @@ Vagrant.configure('2') do |config|
             machine.vm.hostname = "s#{index}.infra"
             machine.vm.network 'private_network', ip: "192.168.50.#{index * 10 + 10}", name: 'vboxnet0'
             if index == 0
+                machine.vm.network 'public_network', bridge: "ens33", ip: "192.168.118.150"
                 machine.vm.network "forwarded_port", guest: 80, host: 1080
                 machine.vm.network "forwarded_port", guest: 80, host: 8080
             end
