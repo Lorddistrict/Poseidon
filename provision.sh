@@ -89,6 +89,9 @@ if [ "$HOSTNAME" = "control" ]; then
 	apt-get install -y \
 		ansible
 
+  # Required for making things working
+	ansible-galaxy collection install community.mysql
+
 	# J'ajoute les deux clefs sur le noeud de controle
 	mkdir -p /root/.ssh
 	cp /vagrant/ansible_rsa /home/vagrant/.ssh/ansible_rsa
