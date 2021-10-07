@@ -85,12 +85,15 @@ apt-get install -y \
 
 # Si la machine s'appelle control
 if [ "$HOSTNAME" = "control" ]; then
-	# J'installe ansible dessus
-	apt-get install -y \
-		ansible
+
+  # setup ansible version
+  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
+  echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu bionic main" > /etc/apt/sources.list.d/ansible-ubuntu-ansible-bionic.list
+  apt update -y
+  apt install ansible
 
   # Required for making things working
-	ansible-galaxy collection install community.mysql
+	ansible-galaxy collection install community.mysql --ignore-errors
 
 	# J'ajoute les deux clefs sur le noeud de controle
 	mkdir -p /root/.ssh
