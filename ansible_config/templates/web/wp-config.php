@@ -1,3 +1,4 @@
+<?php
 define('DB_NAME', '{{ wordpress_name }}' );
 define('DB_USER', '{{ wordpress_user }}');
 define('DB_PASSWORD', '{{ wordpress_password }}');
