@@ -113,7 +113,7 @@
       changed_when: false
       tags: [database]
     - name: generate databases
-      mysql_db:
+      community.mysql.mysql_db:
         check_implicit_admin: yes
         login_user: "{{ item.user }}"
         login_password: "{{ item.password }}"
