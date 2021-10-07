@@ -63,3 +63,7 @@ s4:
 .PHONY: database ## play database playbook
 database:
 	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags database
+
+.PHONY: web ## play web playbook
+web:
+	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags web
