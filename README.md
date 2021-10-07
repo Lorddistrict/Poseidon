@@ -20,6 +20,7 @@ Launch the command  `make help` or `make` generate list of targets with descript
     USER_NAME=user
     GIT_REPOSITORY=https://host.com/name/repository
     GIT_HOST=host.com
+    GIT_BRANCH=name/branch
 ```
 -  Add the githosting_rsa.pub it to your GitHub / GitLab SSH settings
 
