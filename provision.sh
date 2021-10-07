@@ -140,11 +140,13 @@ if [ "$HOSTNAME" = "control" ]; then
 	## END PROVISION
 	MARK
 
+	GIT_DIR="$(basename "$GIT_REPOSITORY" |sed -e 's/.git$//')"
+
 	# Deploy git repository
 	su - vagrant -c "ssh-keyscan $GIT_HOST >> .ssh/known_hosts"
 	su - vagrant -c "sort -u < .ssh/known_hosts > .ssh/known_hosts.tmp && mv .ssh/known_hosts.tmp .ssh/known_hosts"
 	rm -rf "/home/vagrant/$(basename "$GIT_DIR")"
-  su - vagrant -c "git clone -b '$GIT_BRANCH' 'git@$GIT_HOST:$USER_NAME/$GIT_REPOSITORY'"
+  su - vagrant -c "git clone -b '$GIT_BRANCH' '$GIT_REPOSITORY' '$GIT_DIR'"
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 fi
