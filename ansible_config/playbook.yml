@@ -194,10 +194,6 @@
         mode: 0755
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
-    - name: rename wordpress
-      command: "mv /usr/src/{{ item.path }}/wordpress-{{ wordpress_version }}-fr_FR /usr/src/{{ item.path }}/wordpress"
-      with_items: "{{ nfsserver_folders }}"
-      tags: [nfs]
     - name: remove archive
       file:
         path: "/usr/src/wordpress-{{ wordpress_version }}-fr_FR.tar.gz"
