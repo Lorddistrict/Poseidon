@@ -90,7 +90,7 @@ if [ "$HOSTNAME" = "control" ]; then
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
   echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu bionic main" > /etc/apt/sources.list.d/ansible-ubuntu-ansible-bionic.list
   apt update -y
-  apt install ansible
+  apt install ansible -y
 
   # Required for making things working
 	ansible-galaxy collection install community.mysql --ignore-errors
