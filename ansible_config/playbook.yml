@@ -13,8 +13,8 @@
   tasks:
     - name: replace resolv.conf for all sX.infra
       copy:
-        src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf
-        dest: /etc/resolv.conf
+        src: "/home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf"
+        dest: "/etc/resolv.conf"
       tags: [privserv]
 
 - hosts: network
@@ -27,9 +27,27 @@
       tags: [network]
     - name: replace existing dnsmasq.conf
       copy:
-        src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/dnsmasq.conf
-        dest: /etc/dnsmasq.conf
+        src: "/home/vagrant/Poseidon/ansible_config/templates/dnsmasq/dnsmasq.conf"
+        dest: "/etc/dnsmasq.conf"
       tags: [network]
+    - name: install HAproxy
+      package:
+        name: haproxy
+        state: present
+        update_cache: yes
+      tags: [haproxy]
+    - name: replace haproxy config
+      template:
+        src: "/home/vagrant/Poseidon/ansible_config/templates/haproxy/haproxy.cfg"
+        dest: "/etc/haproxy/haproxy.cfg"
+        mode: 0644
+      tags: [haproxy]
+    - name: start service
+      service:
+        name: haproxy
+        state: restarted
+        enabled: yes
+      tags: [haproxy]
 
 - hosts: web
   remote_user: root
@@ -51,7 +69,7 @@
   remote_user: root
   become: true
   vars_files:
-    - /home/vagrant/Poseidon/ansible_config/variables/database.yml
+    - "/home/vagrant/Poseidon/ansible_config/variables/database.yml"
   tasks:
     - name: install mariaDB
       package:
@@ -80,7 +98,7 @@
         name: root
         password: root
         priv: '*.*:ALL,GRANT'
-        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_unix_socket: "/var/run/mysqld/mysqld.sock"
         state: present
       tags: [database]
     - name: removes anonymous users
@@ -91,7 +109,7 @@
       tags: [database]
     - name: access to DB
       blockinfile:
-        path: /etc/mysql/my.cnf
+        path: "/etc/mysql/my.cnf"
         block: |
           [mysqld]
           bind-address=0.0.0.0
