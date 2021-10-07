@@ -1,17 +1,31 @@
-# Installation / Run
+# Poseidon project : Automated provisioning on a classic infrastructure
+### Principal contributors :
+[Arthur][A]
+& [Etienne][E]
 
-## 1. Environment
+[A]:https://github.com/adjikpo
+[E]:https://github.com/Lorddistrict
 
-```cp .env.example .env``` and fill it with your own repository credentials
+---------------------------------------------------------
+## Installation / Run
 
-## 2. SSH
+Launch the command  `make help` or `make` generate list of targets with descriptions
 
-```ssh-keygen -f githosting_rsa``` and add the githosting_rsa.pub it to your GitHub / GitLab SSH settings
+### 1. Environment config
 
-## 3. Run the provision (master)
+- `make env` 
+- Fill environment files with your informations
+ ```bash
+    USER_EMAIL=user@email.com
+    USER_NAME=user
+    GIT_REPOSITORY=https://host.com/name/repository
+    GIT_HOST=host.com
+```
+-  Add the githosting_rsa.pub it to your GitHub / GitLab SSH settings
 
-```vagrant provision```
+### 2. Start the infra
+- `make vagrant`
 
-## 4. Run (infra)
+### 3. Connect to control or another server
 
-```vagrant up```
+`vagrant control` or `vagrant s*`
