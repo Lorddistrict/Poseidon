@@ -188,7 +188,6 @@
       stat:
         path: "/usr/src/{{ item.name }}"
       with_items: "{{ nfsserver_folders }}"
-      register: wordpress_directories
       tags: [nfs]
     - name: unzip it for each shared
       unarchive:
@@ -200,10 +199,8 @@
         mode: 0755
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
-      when: not wordpress_directory.stat.exists
     - name: rename wordpress
       command: "mv /usr/src/latest-fr_FR /usr/src/wordpress"
-      when: not wordpress_directories.stat.exists
       tags: [nfs]
     - name: remove archive
       file:
