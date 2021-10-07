@@ -157,7 +157,7 @@
     - name: create shared folder
       file:
         state: directory
-        path: "/usr/src/{{ item.name }}"
+        path: "/usr/src/{{ item.path }}"
         mode: 0755
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
