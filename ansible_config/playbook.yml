@@ -184,27 +184,22 @@
         url: https://fr.wordpress.org/latest-fr_FR.tar.gz
         dest: "/usr/src"
       tags: [nfs]
-    - name: check if directories already exist
-      stat:
-        path: "/usr/src/{{ item.name }}"
-      with_items: "{{ nfsserver_folders }}"
-      tags: [nfs]
     - name: unzip it for each shared
       unarchive:
         remote_src: yes
-        src: "/usr/src/wordpress-5.8.1-fr_FR.tar.gz"
-        dest: "/usr/src/{{ item.name }}"
+        src: "/usr/src/wordpress-{{ wordpress_version }}-fr_FR.tar.gz"
+        dest: "/usr/src/{{ item.path }}"
         owner: www-data
         group: www-data
         mode: 0755
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
     - name: rename wordpress
-      command: "mv /usr/src/{{ item.name }}/wordpress-{{ wordpress_version }}-fr_FR /usr/src/{{ item.name }}/wordpress"
+      command: "mv /usr/src/{{ item.path }}/wordpress-{{ wordpress_version }}-fr_FR /usr/src/{{ item.path }}/wordpress"
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
     - name: remove archive
       file:
-        path: "/usr/src/latest-fr_FR.tar.gz"
+        path: "/usr/src/wordpress-{{ wordpress_version }}-fr_FR.tar.gz"
         state: absent
       tags: [nfs]
