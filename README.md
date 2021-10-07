@@ -7,9 +7,9 @@
 [E]:https://github.com/Lorddistrict
 
 ---------------------------------------------------------
-## Installation / Run
+## Installation / Requirements
 
-Launch the command  `make help` or `make` generate list of targets with descriptions
+Please install Vagrant and Make for running this project
 
 ### 1. Environment config
 

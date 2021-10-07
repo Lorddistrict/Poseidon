@@ -7,7 +7,6 @@ USER_EMAIL=""
 USER_NAME=""
 GIT_HOST=""
 GIT_REPOSITORY=""
-GIT_BRANCH=""
 HOSTNAME="$(hostname)"
 
 if [ ! -f /vagrant/.env ]; then
@@ -37,12 +36,6 @@ if ! grep -q '^GIT_REPOSITORY=' /vagrant/.env ; then
 	exit 1
 fi
 eval "$(grep '^GIT_REPOSITORY=' /vagrant/.env)"
-
-if ! grep -q '^GIT_BRANCH=' /vagrant/.env ; then
-	>&2 echo "ERROR: unable to find GIT_BRANCH key in /vagrant/.env file"
-	exit 1
-fi
-eval "$(grep '^GIT_BRANCH=' /vagrant/.env)"
 
 ## Verifier que la paire de clefs pour ANSIBLE est presente avant de continuer
 
@@ -149,7 +142,7 @@ if [ "$HOSTNAME" = "control" ]; then
 	su - vagrant -c "ssh-keyscan $GIT_HOST >> .ssh/known_hosts"
 	su - vagrant -c "sort -u < .ssh/known_hosts > .ssh/known_hosts.tmp && mv .ssh/known_hosts.tmp .ssh/known_hosts"
 	rm -rf "/home/vagrant/$(basename "$GIT_DIR")"
-  su - vagrant -c "git clone -b '$GIT_BRANCH' '$GIT_REPOSITORY' '$GIT_DIR'"
+  su - vagrant -c "git clone '$GIT_REPOSITORY' '$GIT_DIR'"
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
 fi
