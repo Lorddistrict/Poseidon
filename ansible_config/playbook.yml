@@ -49,6 +49,7 @@
 
 - hosts: database
   remote_user: root
+  become: true
   tasks:
     - name: install mariaDB
       package:
@@ -77,7 +78,6 @@
         name: root
         password: root
         priv: '*.*:ALL,GRANT'
-        host: localhost
         login_unix_socket: /var/run/mysqld/mysqld.sock
         state: present
       tags: [database]
