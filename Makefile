@@ -13,9 +13,13 @@ help:
 vagrant:
 	vagrant up --provision
 
+.PHONY: reload ## Run playbooks
+reload:
+	vagrant reload --provision
+
 .PHONY: play ## Run playbooks
 play:
-	vagrant -c "ansible-playbook -v -i inventories/default playbook.yml" control
+	vagrant ssh -c "ansible-playbook -v -i Poseidon/ansible_config/inventories/default Poseidon/ansible_config/playbook.yml" control
 
 .PHONY: s0 ## SSH connect to s0
 s0:
