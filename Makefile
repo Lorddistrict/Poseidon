@@ -56,3 +56,10 @@ s3:
 s4:
 	vagrant ssh s4.infra
 
+##################
+# playbooks tags #
+##################
+
+.PHONY: database ## play database playbook
+database:
+	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags database
