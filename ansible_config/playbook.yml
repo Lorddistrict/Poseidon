@@ -13,7 +13,7 @@
   tasks:
     - name: replace resolv.conf for all sX.infra
       copy:
-        src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf
+        src: $(pwd)/templates/dnsmasq/resolv.conf
         dest: /etc/resolv.conf
       tags: [privserv]
 
@@ -27,7 +27,7 @@
       tags: [network]
     - name: replace existing dnsmasq.conf
       copy:
-        src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/dnsmasq.conf
+        src: $(pwd)/templates/dnsmasq/dnsmasq.conf
         dest: /etc/dnsmasq.conf
       tags: [network]
 
@@ -68,7 +68,7 @@
       tags: [database]
     - name: copy credentials
       template:
-        src: "/home/vagrant/ansible_config/templates/database/.my.cnf"
+        src: "$(pwd)/templates/database/.my.cnf"
         dest: "/root/.my.cnf"
         mode: 0755
       tags: [database]
