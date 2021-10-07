@@ -1,0 +1,12 @@
+---
+#MySQL Settings
+mariadb_databases:
+  - user: devopsuser
+    password: devopsuser
+    name: devops
+  - user: devsecuser
+    password: devsecuser
+    name: devsec
+  - user: devsecopsuser
+    password: devsecopsuser
+    name: devsecops
