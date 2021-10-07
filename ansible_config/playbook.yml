@@ -76,15 +76,15 @@
         path: "/mnt/{{ item.path }}"
       with_items: "{{ nfsserver_folders }}"
       tags: [web]
-    - name: change permissions of NFS shared folders
-      file:
-        path: "/mnt/{{ item.path }}"
-        state: directory
-        recurse: true
-        group: www-data
-        owner: www-data
-      with_items: "{{ nfsserver_folders }}"
-      tags: [web]
+#    - name: change permissions of NFS shared folders
+#      file:
+#        path: "/mnt/{{ item.path }}"
+#        state: directory
+#        recurse: true
+#        group: www-data
+#        owner: www-data
+#      with_items: "{{ nfsserver_folders }}"
+#      tags: [web]
     - name: create symbolic links to /var/www folder
       command: "ln -s /mnt/{{ item.path }} /var/www/"
       with_items: "{{ nfsserver_folders }}"
@@ -220,6 +220,15 @@
         owner: www-data
         group: www-data
         mode: 0755
+      with_items: "{{ nfsserver_folders }}"
+      tags: [nfs]
+    - name: change permissions of NFS shared folders
+      file:
+        path: "/usr/src/{{ item.path }}"
+        state: directory
+        recurse: true
+        group: www-data
+        owner: www-data
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
     - name: remove archive
