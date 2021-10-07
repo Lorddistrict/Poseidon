@@ -74,10 +74,10 @@
       tags: [database]
     - name: set password for root user
       mysql_user:
-        name: "root"
-        password: "root"
-        priv: "*.*:ALL"
-        host: "localhost"
+        name: root
+        password: root
+        priv: '*.*:ALL,GRANT'
+        host: localhost
         login_unix_socket: /var/run/mysqld/mysqld.sock
         state: present
       tags: [database]
