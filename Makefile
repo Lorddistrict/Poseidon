@@ -19,7 +19,7 @@ reload:
 
 .PHONY: play ## Run playbooks (ONLY INSIDE CONTROL)
 play:
-	ansible-playbook -v -i Poseidon/ansible_config/inventories/default Poseidon/ansible_config/playbook.yml
+	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml
 
 .PHONY: control ## SSH connect to control
 control:
