@@ -77,7 +77,7 @@
       with_items: "{{ nfsserver_folders }}"
       tags: [web]
     - name: create symbolic links to /var/www folder
-      command: "ln -s /mnt/{{ item.path }} /var/www/"
+      command: "ln -sfn /mnt/{{ item.path }} /var/www/"
       with_items: "{{ nfsserver_folders }}"
       tags: [web]
     - name: change permissions of symlinks NFS shared folders
