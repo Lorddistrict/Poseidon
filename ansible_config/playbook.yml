@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  remote_user: root
   tasks:
     - name: install vim
       apt:
@@ -7,6 +8,7 @@
         state: present
 
 - hosts: private_servers
+  remote_user: root
   tasks:
     - name: replace resolv.conf for all sX.infra
       copy:
@@ -14,6 +16,7 @@
         dest: /etc/resolv.conf
 
 - hosts: network
+  remote_user: root
   tasks:
     - name: install dnsmasq
       apt:
@@ -25,6 +28,7 @@
         dest: /etc/dnsmasq.conf
 
 - hosts: web
+  remote_user: root
   tasks:
     - name: install web packages
       apt:
@@ -59,6 +63,7 @@
         state: absent
 
 - hosts: database
+  remote_user: root
   tasks:
     - name: install mariaDB
       apt:
@@ -70,6 +75,7 @@
         state: started
 
 - hosts: nfs
+  remote_user: root
   tasks:
     - name: install nfs server
       apt:

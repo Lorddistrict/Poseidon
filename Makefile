@@ -21,6 +21,10 @@ reload:
 play:
 	vagrant ssh -c "ansible-playbook -v -i Poseidon/ansible_config/inventories/default Poseidon/ansible_config/playbook.yml" control
 
+.PHONY: control ## SSH connect to control
+control:
+	vagrant ssh control
+
 .PHONY: s0 ## SSH connect to s0
 s0:
 	vagrant ssh s0.infra
