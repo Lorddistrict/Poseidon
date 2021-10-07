@@ -4,7 +4,10 @@ wordpress_version: 5.8.1
 nfsserver_folders:
   - name: wordpress-devops
     path: devops
+    domain: devops.com
   - name: wordpress-devsec
     path: devsec
+    domain: devsec.com
   - name: wordpress-devsecops
     path: devsecops
+    domain: devsecops.com

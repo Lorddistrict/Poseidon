@@ -76,18 +76,28 @@
         path: "/mnt/{{ item.path }}"
       with_items: "{{ nfsserver_folders }}"
       tags: [web]
-#    - name: change permissions of NFS shared folders
-#      file:
-#        path: "/mnt/{{ item.path }}"
-#        state: directory
-#        recurse: true
-#        group: www-data
-#        owner: www-data
-#      with_items: "{{ nfsserver_folders }}"
-#      tags: [web]
     - name: create symbolic links to /var/www folder
       command: "ln -s /mnt/{{ item.path }} /var/www/"
       with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: change permissions of symlinks NFS shared folders
+      command: "chown -Rh /var/www/{{ item.path }}"
+      with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: create vhosts
+      template:
+        src: /home/vagrant/Poseidon/ansible_config/templates/web/etc.apache2.site-available.site.apache2.conf
+        dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
+        with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: enable apache config
+      command: "a2ensite {{ item.name }}"
+      with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: reload apache service
+      service:
+        name: apache2
+        state: reloaded
       tags: [web]
 
 - hosts: database
@@ -220,15 +230,6 @@
         owner: www-data
         group: www-data
         mode: 0755
-      with_items: "{{ nfsserver_folders }}"
-      tags: [nfs]
-    - name: change permissions of NFS shared folders
-      file:
-        path: "/usr/src/{{ item.path }}"
-        state: directory
-        recurse: true
-        group: www-data
-        owner: www-data
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
     - name: remove archive
