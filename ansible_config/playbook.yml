@@ -59,6 +59,7 @@
         name:
           - apache2
           - php7.3
+          - nfs-common
         state: present
       tags: [web]
     - name: start service
