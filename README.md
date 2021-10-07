@@ -13,20 +13,26 @@ Launch the command  `make help` or `make` generate list of targets with descript
 
 ### 1. Environment config
 
-- `make env` 
+- `$ make env`
 - Fill environment files with your informations
- ```bash
-    USER_EMAIL=user@email.com
-    USER_NAME=user
-    GIT_REPOSITORY=https://host.com/name/repository
-    GIT_HOST=host.com
-    GIT_BRANCH=name/branch
-```
+
+### 2. SSH
+
 -  Add the githosting_rsa.pub it to your GitHub / GitLab SSH settings
 
-### 2. Start the infra
-- `make vagrant`
+### 3. Start the VMs
 
-### 3. Connect to control or another server
+- `$ make vagrant`
 
-`vagrant control` or `vagrant s*`
+### 4. Connect to control (main VM)
+
+- `$ vagrant control`
+
+### 5. Launch playbook
+
+- `$ cd Poseidon`
+- `$ make play`
+
+### 6. Others
+
+- `$ make help` - for getting all commands available
