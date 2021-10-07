@@ -73,14 +73,14 @@
         dest: "/root/.my.cnf"
         mode: 0755
       tags: [database]
-    - name: set password for root user
-      mysql_user:
-        name: root
-        password: root
-        priv: '*.*:ALL,GRANT'
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        state: present
-      tags: [database]
+#    - name: set password for root user
+#      mysql_user:
+#        name: root
+#        password: root
+#        priv: '*.*:ALL,GRANT'
+#        login_unix_socket: /var/run/mysqld/mysqld.sock
+#        state: present
+#      tags: [database]
     - name: removes anonymous users
       mysql_user:
         name: ""
