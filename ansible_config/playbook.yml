@@ -8,14 +8,14 @@
         state: present
       tags: [all]
 
-- hosts: private_servers
-  remote_user: root
-  tasks:
-    - name: replace resolv.conf for all sX.infra
-      copy:
-        src: "/home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf"
-        dest: "/etc/resolv.conf"
-      tags: [privserv]
+#- hosts: private_servers
+#  remote_user: root
+#  tasks:
+#    - name: replace resolv.conf for all sX.infra
+#      copy:
+#        src: "/home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf"
+#        dest: "/etc/resolv.conf"
+#      tags: [privserv]
 
 - hosts: network
   remote_user: root
@@ -205,7 +205,7 @@
     - "/home/vagrant/Poseidon/ansible_config/variables/directories.yml"
   tasks:
     - name: install web packages
-      apt:
+      package:
         name:
           - apache2
           - php7.3

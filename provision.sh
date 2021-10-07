@@ -104,29 +104,26 @@ if [ "$HOSTNAME" = "control" ]; then
 
 	# Configuration de SSH en fonction des hosts
 	cat > /home/vagrant/.ssh/config <<-MARK
+	Host *
+	  StrictHostKeyChecking no
 	Host $GIT_HOST
 	  User git
 	  IdentityFile ~/.ssh/githosting_rsa
 	Host s0
 	  User root
 	  IdentityFile ~/.ssh/ansible_rsa
-	  StrictHostKeyChecking accept-new
 	Host s1
 	  User root
 	  IdentityFile ~/.ssh/ansible_rsa
-	  StrictHostKeyChecking accept-new
 	Host s2
 	  User root
 	  IdentityFile ~/.ssh/ansible_rsa
-	  StrictHostKeyChecking accept-new
 	Host s3
     User root
     IdentityFile ~/.ssh/ansible_rsa
-    StrictHostKeyChecking accept-new
   Host s4
     User root
     IdentityFile ~/.ssh/ansible_rsa
-    StrictHostKeyChecking accept-new
 	MARK
 
 	# Correction des permissions
