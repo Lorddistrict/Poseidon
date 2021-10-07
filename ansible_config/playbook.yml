@@ -159,8 +159,8 @@
         state: directory
         path: "/usr/src/{{ item.name }}"
         mode: 0755
-      tags: [nfs]
       with_items: "{{ nfsserver_folders }}"
+      tags: [nfs]
     - name: create folder for PHP session
       file:
         state: directory
