@@ -1,0 +1,9 @@
+---
+# NFS Server configuration
+nfsserver_folders:
+  - name: wordpress-devops
+    path: devops
+  - name: wordpress-devsec
+    path: devsec
+  - name: wordpress-devsecops
+    path: devsecops

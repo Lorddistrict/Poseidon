@@ -60,14 +60,18 @@ s4:
 # playbooks tags #
 ##################
 
-.PHONY: database ## play database playbook
+.PHONY: database ## play database tagged modules
 database:
 	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags database
 
-.PHONY: web ## play web playbook
+.PHONY: web ## play web tagged modules
 web:
 	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags web
 
-.PHONY: haproxy ## play haproxy playbook
+.PHONY: haproxy ## play haproxy tagged modules
 haproxy:
 	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags haproxy
+
+.PHONY: nfs ## play nfs tagged modules
+nfs:
+	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags nfs
