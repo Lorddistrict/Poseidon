@@ -9,13 +9,24 @@ help:
 	| sed 's/\(##\)/\t/' \
 	| expand -t14
 
-.PHONY: vagrant ## Run playbooks
+.PHONY: env ## Create environment files & SSH keys
+env:
+	cp .env.example .env
+	ssh-keygen -f githosting_rsa
+	ssh-keygen -f ansible_rsa
+	echo "Please fill environment files, then use make vagrant"
+
+.PHONY: vagrant ## Run the infra
 vagrant:
 	vagrant up --provision
 
-.PHONY: reload ## Run playbooks
+.PHONY: reload ## Reload the infra 
 reload:
 	vagrant reload --provision
+
+.PHONY: stop ## Stop the infra 
+stop:
+	vagrant halt
 
 .PHONY: play ## Run playbooks (ONLY INSIDE CONTROL)
 play:
