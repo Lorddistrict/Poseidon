@@ -93,7 +93,7 @@ if [ "$HOSTNAME" = "control" ]; then
   apt install ansible -y
 
   # Required for making things working
-	ansible-galaxy collection install community.mysql --ignore-errors
+	su - vagrant -c "ansible-galaxy collection install community.mysql --ignore-errors"
 
 	# J'ajoute les deux clefs sur le noeud de controle
 	mkdir -p /root/.ssh
@@ -104,29 +104,26 @@ if [ "$HOSTNAME" = "control" ]; then
 
 	# Configuration de SSH en fonction des hosts
 	cat > /home/vagrant/.ssh/config <<-MARK
+	Host *
+	  StrictHostKeyChecking no
 	Host $GIT_HOST
 	  User git
 	  IdentityFile ~/.ssh/githosting_rsa
 	Host s0
 	  User root
 	  IdentityFile ~/.ssh/ansible_rsa
-	  StrictHostKeyChecking no
 	Host s1
 	  User root
 	  IdentityFile ~/.ssh/ansible_rsa
-	  StrictHostKeyChecking no
 	Host s2
 	  User root
 	  IdentityFile ~/.ssh/ansible_rsa
-	  StrictHostKeyChecking no
 	Host s3
     User root
     IdentityFile ~/.ssh/ansible_rsa
-    StrictHostKeyChecking no
   Host s4
     User root
     IdentityFile ~/.ssh/ansible_rsa
-    StrictHostKeyChecking no
 	MARK
 
 	# Correction des permissions

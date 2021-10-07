@@ -8,14 +8,14 @@
         state: present
       tags: [all]
 
-- hosts: private_servers
-  remote_user: root
-  tasks:
-    - name: replace resolv.conf for all sX.infra
-      copy:
-        src: "/home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf"
-        dest: "/etc/resolv.conf"
-      tags: [privserv]
+#- hosts: private_servers
+#  remote_user: root
+#  tasks:
+#    - name: replace resolv.conf for all sX.infra
+#      copy:
+#        src: "/home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf"
+#        dest: "/etc/resolv.conf"
+#      tags: [privserv]
 
 - hosts: network
   remote_user: root
@@ -48,22 +48,6 @@
         state: restarted
         enabled: yes
       tags: [haproxy]
-
-- hosts: web
-  remote_user: root
-  tasks:
-    - name: install web packages
-      apt:
-        name:
-          - apache2
-          - php7.3
-        state: present
-      tags: [web]
-    - name: start service
-      service:
-        name: apache2
-        state: started
-      tags: [web]
 
 - hosts: database
   remote_user: root
@@ -124,27 +108,150 @@
     - name: create users with all privilegies
       command: 'mysql -ne "{{ item }}"'
       with_items:
-        - GRANT ALL PRIVILEGES ON *.* TO 'devopsuser'@'%' IDENTIFIED BY 'devopsuser' WITH GRANT OPTION
-        - GRANT ALL PRIVILEGES ON *.* TO 'devsecuser'@'%' IDENTIFIED BY 'devsecuser' WITH GRANT OPTION
-        - GRANT ALL PRIVILEGES ON *.* TO 'devsecopsuser'@'%' IDENTIFIED BY 'devsecopsuser' WITH GRANT OPTION
+        - GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'admin' WITH GRANT OPTION
+        - GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' IDENTIFIED BY 'user' WITH GRANT OPTION
         - FLUSH PRIVILEGES
       changed_when: false
       tags: [database]
-    - name: generate databases
+    - name: generate database
       community.mysql.mysql_db:
         check_implicit_admin: yes
-        login_user: "{{ item.user }}"
-        login_password: "{{ item.password }}"
-        name: "{{ item.name }}"
+        login_user: "{{ wordpress_user }}"
+        login_password: "{{ wordpress_password }}"
+        name: "{{ wordpress_name }}"
         state: present
-      with_items: "{{ mariadb_databases }}"
       tags: [database]
 
 - hosts: nfs
   remote_user: root
+  become: true
+  vars_files:
+    - "/home/vagrant/Poseidon/ansible_config/variables/directories.yml"
+    - "/home/vagrant/Poseidon/ansible_config/variables/database.yml"
   tasks:
-    - name: install nfs server
-      apt:
-        name: nfs-kernel-server
+    - name: install nfs server & dependencies
+      package:
+        name:
+          - nfs-kernel-server
+          - unzip
+        update_cache: yes
         state: present
       tags: [nfs]
+    - name: load NFS
+      command: "modprobe nfs"
+      tags: [nfs]
+    - name: create shared folder
+      file:
+        state: directory
+        path: "/home/data/{{ item.path }}"
+        mode: 0755
+      with_items: "{{ nfsserver_folders }}"
+      tags: [nfs]
+    - name: create folder for PHP session
+      file:
+        state: directory
+        path: "/home/data/session"
+        mode: 0755
+      tags: [nfs]
+    - name: replace export configuration folder
+      template:
+        src: "/home/vagrant/Poseidon/ansible_config/templates/nfs-server/exports"
+        dest: "/etc/exports"
+        mode: 0644
+      tags: [nfs]
+    - name: restart service
+      service:
+        name: nfs-server
+        state: restarted
+        enabled: yes
+      tags: [nfs]
+    - name: download wordpress
+      get_url:
+        url: https://fr.wordpress.org/latest-fr_FR.tar.gz
+        dest: "/home/data"
+      tags: [nfs]
+    - name: unzip it for each shared
+      unarchive:
+        remote_src: yes
+        src: "/home/data/wordpress-{{ wordpress_version }}-fr_FR.tar.gz"
+        dest: "/home/data/{{ item.path }}"
+        owner: www-data
+        group: www-data
+        mode: 0755
+      with_items: "{{ nfsserver_folders }}"
+      tags: [nfs]
+    - name: create wp-config.php in each site
+      template:
+        src: "/home/vagrant/Poseidon/ansible_config/templates/web/wp-config.php"
+        dest: "/home/data/{{ item.path }}/wordpress/wp-config.php"
+        group: www-data
+        owner: www-data
+      with_items: "{{ nfsserver_folders }}"
+      tags: [nfs]
+    - name: remove archive
+      file:
+        path: "/home/data/wordpress-{{ wordpress_version }}-fr_FR.tar.gz"
+        state: absent
+      tags: [nfs]
+
+- hosts: web
+  remote_user: root
+  vars_files:
+    - "/home/vagrant/Poseidon/ansible_config/variables/directories.yml"
+  tasks:
+    - name: install web packages
+      package:
+        name:
+          - apache2
+          - php7.3
+          - php7.3-mysqli
+          - nfs-common
+        state: present
+      tags: [web]
+    - name: start service
+      service:
+        name: apache2
+        state: started
+      tags: [web]
+    - name: create /mnt/nfs folder
+      file:
+        state: directory
+        path: "/mnt/nfs"
+        mode: 0755
+    - name: mount NFS web volumes
+      mount:
+        fstype: nfs4
+        opts: rw,sync,hard,intr
+        state: mounted
+        src: s4.infra:/home/data/{{ item.path }}
+        path: "/mnt/nfs/{{ item.path }}"
+      with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: create symbolic links to /var/www folder
+      command: "ln -sfn /mnt/nfs/{{ item.path }} /var/www/"
+      with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: change permissions of symlinks NFS shared folders
+      command: "chown -Rh www-data:www-data /var/www/{{ item.path }}"
+      with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: create vhosts
+      template:
+        src: "/home/vagrant/Poseidon/ansible_config/templates/web/etc.apache2.site-available.site.apache2.conf"
+        dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
+      with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: replace 000-default.conf
+      file:
+        src: "/home/vagrant/Poseidon/ansible_config/templates/web/000-default.conf"
+        dest: "/etc/apache2/sites-available/000-default.conf"
+      tags: [web]
+    - name: enable apache config
+      command: "a2ensite {{ item.name }}"
+      with_items: "{{ nfsserver_folders }}"
+      tags: [web]
+    - name: reload apache service
+      service:
+        name: apache2
+        state: reloaded
+      tags: [web]

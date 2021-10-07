@@ -1,12 +1,8 @@
 ---
 #MySQL Settings
-mariadb_databases:
-  - user: devopsuser
-    password: devopsuser
-    name: devops
-  - user: devsecuser
-    password: devsecuser
-    name: devsec
-  - user: devsecopsuser
-    password: devsecopsuser
-    name: devsecops
+wordpress_host: s3.infra
+# admin | user
+wordpress_user: admin
+# admin | user
+wordpress_password: admin
+wordpress_name: wordpress
