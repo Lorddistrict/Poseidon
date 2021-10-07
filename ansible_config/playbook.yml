@@ -154,6 +154,9 @@
         update_cache: yes
         state: present
       tags: [nfs]
+    - name: load NFS
+      command: "modprobe nfs"
+      tags: [nfs]
     - name: create shared folder
       file:
         state: directory
