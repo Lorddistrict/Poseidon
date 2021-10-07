@@ -17,9 +17,9 @@ vagrant:
 reload:
 	vagrant reload --provision
 
-.PHONY: play ## Run playbooks
+.PHONY: play ## Run playbooks (ONLY INSIDE CONTROL)
 play:
-	vagrant ssh -c "ansible-playbook -v -i Poseidon/ansible_config/inventories/default Poseidon/ansible_config/playbook.yml" control
+	ansible-playbook -v -i Poseidon/ansible_config/inventories/default Poseidon/ansible_config/playbook.yml
 
 .PHONY: control ## SSH connect to control
 control:
