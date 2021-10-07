@@ -67,3 +67,7 @@ database:
 .PHONY: web ## play web playbook
 web:
 	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags web
+
+.PHONY: haproxy ## play haproxy playbook
+haproxy:
+	ansible-playbook -v -i ansible_config/inventories/default ansible_config/playbook.yml --tags haproxy
