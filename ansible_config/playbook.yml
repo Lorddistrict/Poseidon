@@ -6,6 +6,7 @@
       apt:
         name: vim
         state: present
+      tags: [all]
 
 - hosts: private_servers
   remote_user: root
@@ -14,6 +15,7 @@
       copy:
         src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf
         dest: /etc/resolv.conf
+      tags: [privserv]
 
 - hosts: network
   remote_user: root
@@ -22,10 +24,12 @@
       apt:
         name: dnsmasq
         state: present
+      tags: [network]
     - name: replace existing dnsmasq.conf
       copy:
         src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/dnsmasq.conf
         dest: /etc/dnsmasq.conf
+      tags: [network]
 
 - hosts: web
   remote_user: root
@@ -36,43 +40,85 @@
           - apache2
           - php7.3
         state: present
+      tags: [web]
     - name: start service
       service:
         name: apache2
         state: started
-    - name: download wordpress
-      get_url:
-        url: https://fr.wordpress.org/latest-fr_FR.tar.gz
-        dest: "/usr/src"
-    - name: check if already exists
-      stat:
-        path: "/usr/src/wordpress"
-      register: wordpress_directory
-    - name: unzip it
-      unarchive:
-        remote_src: yes
-        src: "/usr/src/latest-fr_FR.tar.gz"
-        dest: "/usr/src"
-      when: not wordpress_directory.stat.exists
-    - name: rename wordpress
-      command: "mv /usr/src/latest-fr_FR /usr/src/wordpress"
-      when: not wordpress_directory.stat.exists
-    - name: remove archive
-      file:
-        path: "/usr/src/latest-fr_FR.tar.gz"
-        state: absent
+      tags: [web]
 
 - hosts: database
   remote_user: root
   tasks:
     - name: install mariaDB
-      apt:
-        name: mariadb
+      package:
+        name:
+          - mariadb-server
+          - mariadb-client
+          - python-pip
+          - python-pymysql
+        update_cache: yes
         state: present
+      tags: [database]
     - name: start service
       service:
         name: mysql
         state: started
+        enabled: yes
+      tags: [database]
+    - name: copy credentials
+      template:
+        src: "/home/vagrant/ansible_config/templates/database/.my.cnf"
+        dest: "/root/.my.cnf"
+        mode: 0755
+      tags: [database]
+    - name: set password for root user
+      mysql_user:
+        name: "root"
+        password: "root"
+        priv: "*.*:ALL,GRANT"
+        host: "localhost"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        state: present
+      tags: [database]
+    - name: removes anonymous users
+      mysql_user:
+        name: ""
+        host_all: yes
+        state: absent
+      tags: [database]
+    - name: access to DB
+      blockinfile:
+        path: /etc/mysql/my.cnf
+        block: |
+          [mysqld]
+          bind-address=0.0.0.0
+        state: present
+      tags: [database]
+    - name: reload service
+      service:
+        name: mariadb
+        state: restarted
+        enabled: yes
+      tags: [database]
+    - name: create users with all privilegies
+      command: 'mysql -ne "{{ item }}"'
+      with_items:
+        - GRANT ALL PRIVILEGES ON *.* TO 'devopsuser'@'%' IDENTIFIED BY 'devopsuser' WITH GRANT OPTION
+        - GRANT ALL PRIVILEGES ON *.* TO 'devsecuser'@'%' IDENTIFIED BY 'devsecuser' WITH GRANT OPTION
+        - GRANT ALL PRIVILEGES ON *.* TO 'devsecopsuser'@'%' IDENTIFIED BY 'devsecopsuser' WITH GRANT OPTION
+        - FLUSH PRIVILEGES
+      changed_when: false
+      tags: [database]
+    - name: generate databases
+      mysql_db:
+        check_implicit_admin: yes
+        login_user: "{{ item.user }}"
+        login_password: "{{ item.password }}"
+        name: "{{ item.name }}"
+        state: present
+      with_items: "{{ mariadb_databases }}"
+      tags: [database]
 
 - hosts: nfs
   remote_user: root
@@ -81,3 +127,4 @@
       apt:
         name: nfs-kernel-server
         state: present
+      tags: [nfs]
