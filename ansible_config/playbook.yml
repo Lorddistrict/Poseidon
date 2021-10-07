@@ -12,7 +12,7 @@
   tasks:
     - name: replace resolv.conf for all sX.infra
       copy:
-        src: /home/vagrant/ansible_config/templates/dnsmasq/resolv.conf
+        src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/resolv.conf
         dest: /etc/resolv.conf
 
 - hosts: network
@@ -24,7 +24,7 @@
         state: present
     - name: replace existing dnsmasq.conf
       copy:
-        src: /home/vagrant/ansible_config/templates/dnsmasq/dnsmasq.conf
+        src: /home/vagrant/Poseidon/ansible_config/templates/dnsmasq/dnsmasq.conf
         dest: /etc/dnsmasq.conf
 
 - hosts: web
