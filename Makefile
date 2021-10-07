@@ -9,9 +9,13 @@ help:
 	| sed 's/\(##\)/\t/' \
 	| expand -t14
 
-.PHONY: run ## Run playbooks
-run:
-	ansible-playbook -v -i inventories/default playbook.yml
+.PHONY: vagrant ## Run playbooks
+vagrant:
+	vagrant up --provision
+
+.PHONY: play ## Run playbooks
+play:
+	vagrant -c "ansible-playbook -v -i inventories/default playbook.yml" control
 
 .PHONY: s0 ## SSH connect to s0
 s0:
@@ -32,3 +36,4 @@ s3:
 .PHONY: s4 ## SSH connect to s4
 s4:
 	vagrant ssh s4.infra
+

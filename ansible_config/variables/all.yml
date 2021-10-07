@@ -1,7 +1,6 @@
 ---
-app_sites:
-  - domain: devops.com
-    config: devops-com
-    ip:
-      - 192.168.50.20
-      - 192.168.50.30
+#MySQL Settings
+mysql_root_password: "root"
+mysql_db: "wordpress"
+mysql_user: "root"
+mysql_password: "root"

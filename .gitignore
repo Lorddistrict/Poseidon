@@ -1,5 +1,7 @@
 .idea/
 .env
-githosting_rsa
-githosting_rsa.pub
+/githosting_rsa
+/githosting_rsa.pub
 .vagrant/
+/ansible_rsa
+/ansible_rsa.pub

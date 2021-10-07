@@ -32,6 +32,31 @@
           - apache2
           - php7.3
         state: present
+    - name: start service
+      service:
+        name: apache2
+        state: started
+    - name: download wordpress
+      get_url:
+        url: https://fr.wordpress.org/latest-fr_FR.tar.gz
+        dest: "/usr/src"
+    - name: check if already exists
+      stat:
+        path: "/usr/src/wordpress"
+      register: wordpress_directory
+    - name: unzip it
+      unarchive:
+        remote_src: yes
+        src: "/usr/src/latest-fr_FR.tar.gz"
+        dest: "/usr/src"
+      when: not wordpress_directory.stat.exists
+    - name: rename wordpress
+      command: "mv /usr/src/latest-fr_FR /usr/src/wordpress"
+      when: not wordpress_directory.stat.exists
+    - name: remove archive
+      file:
+        path: "/usr/src/latest-fr_FR.tar.gz"
+        state: absent
 
 - hosts: database
   tasks:
@@ -39,6 +64,10 @@
       apt:
         name: mariadb
         state: present
+    - name: start service
+      service:
+        name: mysql
+        state: started
 
 - hosts: nfs
   tasks:
