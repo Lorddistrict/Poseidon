@@ -70,7 +70,7 @@
     - name: mount NFS web volumes
       mount:
         fstype: nfs4
-        opts: rw
+        opts: rw,sync,hard,intr
         state: mounted
         src: s4.infra:/usr/src/{{ item.path }}
         path: "/mnt/{{ item.path }}"
