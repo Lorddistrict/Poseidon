@@ -88,7 +88,7 @@
       template:
         src: /home/vagrant/Poseidon/ansible_config/templates/web/etc.apache2.site-available.site.apache2.conf
         dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
-        with_items: "{{ nfsserver_folders }}"
+      with_items: "{{ nfsserver_folders }}"
       tags: [web]
     - name: enable apache config
       command: "a2ensite {{ item.name }}"
