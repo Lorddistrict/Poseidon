@@ -51,6 +51,8 @@
 
 - hosts: web
   remote_user: root
+  vars_files:
+    - "/home/vagrant/Poseidon/ansible_config/variables/directories.yml"
   tasks:
     - name: install web packages
       apt:
@@ -63,6 +65,15 @@
       service:
         name: apache2
         state: started
+      tags: [web]
+    - name: mount NFS web volumes
+      mount:
+        fstype: nfs4
+        opts: defaults
+        state: mounted
+        src: s4.infra:/usr/src/{{ item.path }}
+        path: "/mnt/{{ item.path }}"
+      with_items: "{{ nfsserver_folders }}"
       tags: [web]
 
 - hosts: database
