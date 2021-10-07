@@ -81,7 +81,7 @@
       with_items: "{{ nfsserver_folders }}"
       tags: [web]
     - name: change permissions of symlinks NFS shared folders
-      command: "chown -Rh /var/www/{{ item.path }}"
+      command: "chown -Rh www-data:www-data /var/www/{{ item.path }}"
       with_items: "{{ nfsserver_folders }}"
       tags: [web]
     - name: create vhosts
