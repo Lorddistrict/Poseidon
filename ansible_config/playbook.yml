@@ -192,7 +192,7 @@
     - name: unzip it for each shared
       unarchive:
         remote_src: yes
-        src: "/usr/src/latest-fr_FR.tar.gz"
+        src: "/usr/src/wordpress-5.8.1-fr_FR.tar.gz"
         dest: "/usr/src/{{ item.name }}"
         owner: www-data
         group: www-data
@@ -200,7 +200,8 @@
       with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
     - name: rename wordpress
-      command: "mv /usr/src/latest-fr_FR /usr/src/wordpress"
+      command: "mv /usr/src/{{ item.name }}/wordpress-{{ wordpress_version }}-fr_FR /usr/src/{{ item.name }}/wordpress"
+      with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
     - name: remove archive
       file:

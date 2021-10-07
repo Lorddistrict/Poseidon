@@ -1,5 +1,6 @@
 ---
 # NFS Server configuration
+wordpress_version: 5.8.1
 nfsserver_folders:
   - name: wordpress-devops
     path: devops
