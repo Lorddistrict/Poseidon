@@ -160,7 +160,7 @@
         path: "/usr/src/{{ item.name }}"
         mode: 0755
       tags: [nfs]
-      with_items: "{{ directories }}"
+      with_items: "{{ nfsserver_folders }}"
     - name: create folder for PHP session
       file:
         state: directory
@@ -187,7 +187,7 @@
     - name: check if directories already exist
       stat:
         path: "/usr/src/{{ item.name }}"
-      with_items: "{{ directories }}"
+      with_items: "{{ nfsserver_folders }}"
       register: wordpress_directories
       tags: [nfs]
     - name: unzip it for each shared
@@ -198,7 +198,7 @@
         owner: www-data
         group: www-data
         mode: 0755
-      with_items: "{{ directories }}"
+      with_items: "{{ nfsserver_folders }}"
       tags: [nfs]
       when: not wordpress_directory.stat.exists
     - name: rename wordpress
