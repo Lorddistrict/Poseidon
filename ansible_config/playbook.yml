@@ -108,9 +108,8 @@
     - name: create users with all privilegies
       command: 'mysql -ne "{{ item }}"'
       with_items:
-        - GRANT ALL PRIVILEGES ON *.* TO 'devopsuser'@'%' IDENTIFIED BY 'devopsuser' WITH GRANT OPTION
-        - GRANT ALL PRIVILEGES ON *.* TO 'devsecuser'@'%' IDENTIFIED BY 'devsecuser' WITH GRANT OPTION
-        - GRANT ALL PRIVILEGES ON *.* TO 'devsecopsuser'@'%' IDENTIFIED BY 'devsecopsuser' WITH GRANT OPTION
+        - GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'admin' WITH GRANT OPTION
+        - GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' IDENTIFIED BY 'user' WITH GRANT OPTION
         - FLUSH PRIVILEGES
       changed_when: false
       tags: [database]

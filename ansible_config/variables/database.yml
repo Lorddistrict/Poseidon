@@ -1,6 +1,8 @@
 ---
 #MySQL Settings
 wordpress_host: s3.infra
-wordpress_user: root
-wordpress_password: root
+# admin | user
+wordpress_user: admin
+# admin | user
+wordpress_password: admin
 wordpress_name: wordpress
