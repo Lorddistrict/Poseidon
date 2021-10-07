@@ -165,11 +165,6 @@
         state: restarted
         enabled: yes
       tags: [nfs]
-    - name: create /home/data folder
-      file:
-        state: directory
-        dest: "/home/data"
-        mode: 0755
     - name: download wordpress
       get_url:
         url: https://fr.wordpress.org/latest-fr_FR.tar.gz
@@ -188,7 +183,7 @@
     - name: create wp-config.php in each site
       file:
         src: "/home/vagrant/Poseidon/ansible_config/templates/web/wp-config.php"
-        dest: "/home/data/{{ item.path }}/wordpress"
+        dest: "/home/data/{{ item.path }}/wordpress/wp-config.php"
         group: www-data
         owner: www-data
       with_items: "{{ nfsserver_folders }}"
