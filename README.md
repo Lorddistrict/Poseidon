@@ -31,7 +31,7 @@ B. Please check your config inside VirtuaBox : File > Host Network Manager
 
 ### 4. Connect to control (main VM)
 
-- `$ vagrant control`
+- `$ make control`
 
 ### 5. Launch playbook
 
